@@ -6,6 +6,10 @@ export default function (app: Express) {
   app.use(compression());
   app.use(express.static(path.resolve(__dirname, "../../dist")));
 
+  app.get("/", function (req, res, next) {
+    res.sendFile("/main/main.html");
+  });
+
   app.get("/main", function (req, res, next) {
     res.sendFile("/main/main.html");
   });
