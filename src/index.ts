@@ -16,8 +16,11 @@ const io = new Server(server)
 io.on('connection', (socket) => {
   // 發射 welcome訊息到 join頻道
   socket.emit('join', 'welcome1')
-  socket.emit('join', 'welcome2')
-  socket.emit('join', 'welcome3')
+
+  socket.on('chat', (msg) => {
+    console.log('server', msg)
+    io.emit('chat', msg)
+  })
 })
 
 // 執行npm run dev本地開發 or 執行npm run start部署後啟動線上伺服器
