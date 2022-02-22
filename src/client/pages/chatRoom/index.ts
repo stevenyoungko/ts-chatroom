@@ -11,6 +11,11 @@ if (!userName && !roomName) {
 
 // 1.建立連接 -> node server
 const clientIo = io()
+
+
+// 加入聊天室的發送
+clientIo.emit('join', { userName, roomName })
+
 const textInput = document.getElementById('textInput') as HTMLInputElement
 const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement
 const chatBoard = document.getElementById('chatBoard') as HTMLDivElement
@@ -36,6 +41,16 @@ function msgHandler(msg: string) {
   chatBoard.scrollTop = chatBoard.scrollHeight
 }
 
+function rommMsgHandler(msg: string) {
+  const divBox = document.createElement('div')
+  divBox.classList.add('flex', 'justify-center', 'mb-4', 'center-end')
+  divBox.innerHTML = `
+    <p class="text-gray-700 text-sm">${msg}</p>
+  `
+  chatBoard.appendChild(divBox)
+  chatBoard.scrollTop = chatBoard.scrollHeight
+}
+
 submitBtn.addEventListener('click', () => {
   const textValue = textInput.value
   // chat event
@@ -47,10 +62,13 @@ backBtn.addEventListener('click', () => {
 })
 
 clientIo.on('join', msg => {
-  console.log(msg)
+  rommMsgHandler(msg)
 })
 
 clientIo.on('chat', (msg) => {
-  console.log('client', msg)
   msgHandler(msg)
+})
+
+clientIo.on('leave', (msg) => {
+  rommMsgHandler(msg)
 })
