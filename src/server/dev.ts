@@ -6,7 +6,7 @@ export default function (app: Express) {
   const config = require("../../webpack.config.js");
   const compiler = webpack(config);
 
-  app.get("/main", function (req, res, next) {
+  app.get("/", function (req, res, next) {
     res.redirect("/main/main.html");
   });
 

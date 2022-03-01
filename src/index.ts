@@ -16,26 +16,31 @@ const userService = new UserService()
 
 // 監測連接
 io.on('connection', (socket) => {
+  // 加入聊天室
   socket.on('join', ({ userName, roomName }: { userName: string, roomName: string }) => {
     const userData = userService.userDataHandler(
       socket.id,
       userName,
       roomName
     )
+
+    socket.join(userData.roomName)
+
     userService.addUser(userData)
-    console.log(userService)
-    io.emit('join', `${userName} 加入了 ${roomName} 聊天室`)
+    
+    socket.broadcast.to(userData.roomName).emit('join', `${userName} 加入了 ${roomName} 聊天室`)
   })
 
   socket.on('chat', (msg) => {
     io.emit('chat', msg)
   })
 
+  // 離開聊天室
   socket.on('disconnect', () => {
     const userData = userService.getUser(socket.id)
     const userName = userData?.userName
     if (userName) {
-      io.emit('leave', `${userName}離開聊天室!`)
+      socket.broadcast.to(userData.roomName).emit('leave', `${userName}離開 ${userData.roomName} 聊天室!`)
     }
     userService.removeUser(socket.id)
   })
