@@ -1,4 +1,4 @@
-type UserData = {
+export type UserData = {
   id: string
   userName: string
   roomName: string
