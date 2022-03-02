@@ -1,8 +1,12 @@
 import "./index.css";
 import { io } from 'socket.io-client'
 import { Client } from "socket.io/dist/client";
-import { UserData } from "@/service/UserService"; 
 
+type UserData = {
+  id: string
+  userName: string
+  roomName: string
+}
 type UserMsg = { userData: UserData, msg: string, time: number }
 
 const url = new URL(location.href)
@@ -10,7 +14,7 @@ const userName = url.searchParams.get('user_name')
 const roomName = url.searchParams.get('room_name')
 
 if (!userName && !roomName) {
-  location.href = '/main/main.html'
+  location.href = '/'
 }
 
 // 1.建立連接 -> node server
@@ -83,7 +87,7 @@ submitBtn.addEventListener('click', () => {
 })
 
 backBtn.addEventListener('click', () => {
-  location.href = '/main/main.html'
+  location.href = '/'
 })
 
 clientIo.on('join', msg => {

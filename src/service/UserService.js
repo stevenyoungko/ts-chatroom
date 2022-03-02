@@ -1,28 +1,22 @@
-export type UserData = {
-  id: string
-  userName: string
-  roomName: string
-}
-
-export default class UserService {
+module.exports = class UserService {
   // 記錄使用者的資訊
-  private userMap: Map<string, UserData>
+  #userMap
 
   constructor() {
     this.userMap = new Map()
   }
 
-  addUser(data: UserData) {
+  addUser(data) {
     this.userMap.set(data.id, data)
   }
 
-  removeUser(id: string) {
+  removeUser(id) {
     if (this.userMap.has(id)) {
       this.userMap.delete(id)
     }
   }
 
-  getUser(id: string) {
+  getUser(id) {
     if (!this.userMap.has(id)) return null
 
     const data = this.userMap.get(id)
@@ -33,7 +27,7 @@ export default class UserService {
     return null
   }
 
-  userDataHandler(id: string, userName: string, roomName: string): UserData {
+  userDataHandler(id, userName, roomName) {
     return {
       id,
       userName,

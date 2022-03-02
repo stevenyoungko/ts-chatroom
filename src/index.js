@@ -1,17 +1,12 @@
-import devServer from "@/server/dev";
-import prodServer from "@/server/prod";
-import express from "express";
-import { Server, Socket } from 'socket.io'
-import http from 'http'
-import UserService from "@/service/UserService"
-import moment from 'moment'
-
-import { name } from "@/utils";
-
-const port = 3000;
+const express  = require("express") 
+const path = require("path")
+const socket = require('socket.io') 
+const http = require('http') 
+const UserService = require("../src/service/UserService")
+const moment =  require('moment')
 const app = express();
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new socket.Server(server)
 const userService = new UserService()
 
 
@@ -20,7 +15,7 @@ io.on('connection', (socket) => {
   socket.emit('userID', socket.id)
 
   // 加入聊天室
-  socket.on('join', ({ userName, roomName }: { userName: string, roomName: string }) => {
+  socket.on('join', ({ userName, roomName }) => {
     const userData = userService.userDataHandler(
       socket.id,
       userName,
@@ -57,9 +52,12 @@ io.on('connection', (socket) => {
 if (process.env.NODE_ENV === "development") {
   devServer(app);
 } else {
-  prodServer(app);
+  app.use(express.static("dist"))
+  app.get("/", function (req, res, next) {
+    res.sendFile(path.join(__dirname, '../dist/main/main.html'));
+  });
 }
 
-server.listen(port, () => {
-  console.log(`The application is running on port ${port}.`);
-});
+server.listen(process.env.PORT || 3000, () => {
+  console.log(`The application is running.`);
+})
